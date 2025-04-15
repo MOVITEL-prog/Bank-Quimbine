@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Banco Digital</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .saldo {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px 0;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .historico {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Meu Banco Digital</h1>
+        
+        <div>
+            <h3>Saldo disponível:</h3>
+            <div class="saldo">R$ <span id="saldo">0,00</span></div>
+        </div>
+        
+        <div>
+            <h3>Transferência</h3>
+            <input type="number" id="valorTransferencia" placeholder="Valor em R$" step="0.01" min="0">
+            <button onclick="transferir()">Transferir</button>
+        </div>
+        
+        <div class="historico">
+            <h3>Histórico de Transações</h3>
+            <ul id="historicoTransacoes"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Inicializa o saldo e histórico se não existirem
+        if(!localStorage.getItem('saldo')) {
+            localStorage.setItem('saldo', '1000.00');
+        }
+        if(!localStorage.getItem('historico')) {
+            localStorage.setItem('historico', JSON.stringify([]));
+        }
+        
+        // Atualiza a tela com os dados atuais
+        atualizarTela();
+        
+        function atualizarTela() {
+            // Mostra o saldo
+            document.getElementById('saldo').textContent = 
+                parseFloat(localStorage.getItem('saldo')).toFixed(2);
+            
+            // Mostra o histórico
+            const historico = JSON.parse(localStorage.getItem('historico'));
+            const listaHistorico = document.getElementById('historicoTransacoes');
+            listaHistorico.innerHTML = '';
+            
+            historico.forEach(transacao => {
+                const item = document.createElement('li');
+                item.textContent = `${transacao.data}: Transferência de R$ ${transacao.valor.toFixed(2)}`;
+                listaHistorico.appendChild(item);
+            });
+        }
+        
+        function transferir() {
+            const valorInput = document.getElementById('valorTransferencia');
+            const valor = parseFloat(valorInput.value);
+            const saldoAtual = parseFloat(localStorage.getItem('saldo'));
+            
+            if(isNaN(valor) || valor <= 0) {
+                alert('Por favor, insira um valor válido maior que zero.');
+                return;
+            }
+            
+            if(valor > saldoAtual) {
+                alert('Saldo insuficiente para esta transferência.');
+                return;
+            }
+            
+            // Atualiza o saldo
+            const novoSaldo = saldoAtual - valor;
+            localStorage.setItem('saldo', novoSaldo.toFixed(2));
+            
+            // Adiciona ao histórico
+            const historico = JSON.parse(localStorage.getItem('historico'));
+            historico.push({
+                data: new Date().toLocaleString(),
+                valor: valor
+            });
+            localStorage.setItem('historico', JSON.stringify(historico));
+            
+            // Atualiza a tela
+            atualizarTela();
+            
+            // Limpa o campo de valor
+            valorInput.value = '';
+            
+            alert(`Transferência de R$ ${valor.toFixed(2)} realizada com sucesso!`);
+        }
+    </script>
+</body>
+</html>
