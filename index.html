@@ -5,7 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Banco Digital</title>
     <style>
-        body {
+       <!-- Firebase Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // Cole AQUI o firebaseConfig que você copiou
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-znCFb3G_RFw8kcwCdD8n4...",
+    authDomain: "meubancodigital-8cbc1.firebaseapp.com",
+    projectId: "meubancodigital-8cbc1",
+    storageBucket: "meubancodigital-8cbc1.appspot.com",
+    messagingSenderId: "845999054513",
+    appId: "1:845999054513:web:d388c668cf1c18940b0c90",
+    measurementId: "G-Z6PR025TR2"
+  };
+
+  // Inicialize o Firebase
+  firebase.initializeApp(firebaseConfig);
+
+  // Exporte os serviços (opcional, para usar em outros arquivos)
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+</script> body {
             font-family: Arial, sans-serif;
             max-width: 600px;
             margin: 0 auto;
